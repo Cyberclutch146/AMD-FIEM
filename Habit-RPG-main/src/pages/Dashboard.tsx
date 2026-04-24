@@ -110,8 +110,8 @@ export const Dashboard: React.FC = () => {
             <span className="text-xs font-black italic text-amber-500 drop-shadow-sm">{currentRisk.split(':')[0]}</span>
           </div>
           <div className="bg-surface-container-high rounded-2xl p-4 border border-outline-variant/20 shadow-sm flex flex-col items-center justify-center text-center transition-transform active:scale-95 cursor-default">
-            <span className="text-[10px] font-bold font-label text-on-surface-variant uppercase tracking-widest mb-1">Legacy XP</span>
-            <span className="text-lg font-black italic text-on-surface drop-shadow-sm">{user ? Math.floor(user.xp) : 0}</span>
+            <span className="text-[10px] font-bold font-label text-on-surface-variant uppercase tracking-widest mb-1">Current Streak</span>
+            <span className="text-lg font-black italic text-on-surface drop-shadow-sm">{user?.streak || 0}</span>
           </div>
           <div className="bg-surface-container-high rounded-2xl p-4 border border-outline-variant/20 shadow-sm flex flex-col items-center justify-center text-center transition-transform active:scale-95 cursor-default">
             <span className="text-[10px] font-bold font-label text-on-surface-variant uppercase tracking-widest mb-1">Consistency</span>

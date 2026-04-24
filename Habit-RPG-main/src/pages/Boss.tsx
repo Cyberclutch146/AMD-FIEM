@@ -2,7 +2,7 @@ import React, { useMemo, useState } from 'react';
 import { TopBar } from '../components/layout/TopBar';
 import { BottomNav } from '../components/layout/BottomNav';
 import { useHabitStore } from '../store/useHabitStore';
-import { useUserStore } from '../store/useUserStore';
+
 import { GlitchText } from '../components/animations/GlitchText';
 import { AuroraBackground } from '../components/animations/AuroraBackground';
 import { StarBorder } from '../components/animations/StarBorder';
@@ -11,13 +11,13 @@ import { BOSS_ROSTER } from '../lib/gameEngine';
 
 export const Boss: React.FC = () => {
   const logs = useHabitStore(state => state.logs);
-  const user = useUserStore(state => state.user);
+
   const [showRoster, setShowRoster] = useState(false);
   const [previewBossId, setPreviewBossId] = useState<string | null>(null);
   
   // Calculate active boss and full progression
   const { currentBoss, currentBossIndex, bossDamagePercent, activeHp, totalDamage, defeatedCount } = useMemo(() => {
-    const totalDmg = logs.reduce((sum, log) => sum + (log.damageDealt || 10), 0);
+    const totalDmg = logs.reduce((sum, log) => sum + (log.healthScoreAwarded || 10), 0);
     
     let cumulativeHp = 0;
     let activeBoss = BOSS_ROSTER[BOSS_ROSTER.length - 1];
@@ -51,7 +51,7 @@ export const Boss: React.FC = () => {
   }, [logs]);
 
   const recentCrits = useMemo(() => {
-    return logs.filter(l => l.isCritical).slice(-3);
+    return logs.filter(l => (l.healthScoreAwarded || 0) >= 30).slice(-3);
   }, [logs]);
 
   return (
@@ -150,35 +150,11 @@ export const Boss: React.FC = () => {
             </div>
             <div className="bg-surface-container-low p-4 rounded-xl border border-outline-variant/10 flex flex-col items-center justify-center text-center space-y-1 hover:bg-surface-container-high transition-colors shadow-lg">
               <span className="material-symbols-outlined text-secondary text-3xl" style={{ fontVariationSettings: "'FILL' 1" }}>verified</span>
-              <div className="text-xl font-black text-on-surface">{logs.filter(l => l.isCritical).length}</div>
+              <div className="text-xl font-black text-on-surface">{logs.filter(l => (l.healthScoreAwarded || 0) >= 30).length}</div>
               <div className="font-label text-[9px] tracking-widest text-neutral-500 uppercase">Perfect Days</div>
             </div>
           </div>
 
-          {/* Class Bonus Banner */}
-          {user?.class && user.class !== 'none' && (
-            <div className={`p-4 rounded-xl border flex items-center gap-4 ${
-              (user.class === 'warrior' && currentBoss.weakness === 'Workout') ||
-              (user.class === 'mage' && currentBoss.weakness === 'Custom') ||
-              (user.class === 'rogue' && currentBoss.weakness === 'Steps')
-                ? 'bg-green-900/30 border-green-500/40 shadow-[0_0_20px_rgba(34,197,94,0.15)]'
-                : 'bg-surface-container-low border-outline-variant/10'
-            }`}>
-              <span className="material-symbols-outlined text-2xl text-green-400">military_tech</span>
-              <div>
-                <p className="font-black text-on-surface uppercase text-xs tracking-widest">
-                  {user.class.toUpperCase()} Class Active
-                </p>
-                <p className="text-[10px] text-secondary mt-0.5">
-                  {(user.class === 'warrior' && currentBoss.weakness === 'Workout') ||
-                   (user.class === 'mage' && currentBoss.weakness === 'Custom') ||
-                   (user.class === 'rogue' && currentBoss.weakness === 'Steps')
-                    ? '⚡ CLASS BONUS APPLIES — You deal +50% damage to this boss!'
-                    : 'Class bonus does not apply to this boss\'s weakness.'}
-                </p>
-              </div>
-            </div>
-          )}
 
           {/* Boss Roster Preview */}
           <div className="bg-surface-container rounded-xl overflow-hidden border border-outline-variant/10 shadow-xl">

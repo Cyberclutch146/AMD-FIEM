@@ -18,16 +18,8 @@ export const userSchema = z.object({
   id: z.string(),
   name: z.string(),
   email: z.string().email(),
-  level: z.number().min(1),
-  xp: z.number().min(0),
-  hp: z.number().min(0).max(100).optional().default(100),
-  maxHp: z.number().min(100).optional().default(100),
-  gold: z.number().min(0).optional().default(0),
-  class: z.enum(["none", "warrior", "mage", "rogue"]).optional().default("none"),
-  equippedWeapon: z.string().nullable().optional(),
   streak: z.number().min(0),
   lastCheckInDate: z.any().nullable(), // ServerTimestamp or null
-  hardMode: z.boolean().optional(),
   streakShields: z.number().min(0).max(2).optional(),
   theme: z.string().optional().default("dark"),
   unlockedThemes: z.array(z.string()).optional().default(["dark"]),
@@ -35,18 +27,6 @@ export const userSchema = z.object({
   // -- New Health Intelligence Mechanics --
   healthScore: z.number().min(0).optional().default(0),
   consistencyScore: z.number().min(0).optional().default(0),
-  // -- Legacy RPG Mechanics (To be removed) --
-  inventory: z.array(z.object({
-    id: z.string(),
-    type: z.enum(["weapon", "armor", "pet", "artifact"]),
-    name: z.string(),
-    rarity: z.enum(["common", "rare", "epic", "legendary"]),
-    statBonus: z.string().optional(), // 'crit+5', 'hp+20'
-  })).optional().default([]),
-  equippedArmor: z.string().nullable().optional(),
-  equippedPet: z.string().nullable().optional(),
-  skillPoints: z.number().min(0).optional().default(0),
-  unlockedSkills: z.array(z.string()).optional().default([]),
 });
 export type User = z.infer<typeof userSchema>;
 
@@ -55,7 +35,6 @@ export const habitSchema = z.object({
   title: z.string().min(1),
   type: z.enum(["Workout", "Diet", "Steps", "Custom", "Healthy", "Junk", "Water"]), // Expanded for food
   difficulty: z.enum(["Easy", "Medium", "Hard", "Morning", "Afternoon", "Night", "Snack"]), // Expanded for food
-  xpReward: z.number().min(10), // Will act as base healthScoreModifier
   createdAt: z.any(), // ServerTimestamp
 });
 export type Habit = z.infer<typeof habitSchema>;
@@ -69,13 +48,8 @@ export const logSchema = z.object({
   foodType: z.enum(["Healthy", "Junk", "Water"]).optional(),
   mealTime: z.enum(["Morning", "Afternoon", "Night", "Snack"]).optional(),
   healthScoreAwarded: z.number().optional(),
-  // -- Legacy --
-  xpAwarded: z.number().optional(),
-  goldAwarded: z.number().optional(),
-  damageDealt: z.number().optional(),
-  isCritical: z.boolean().optional(),
   idempotencyKey: z.string().optional(),
-  source: z.enum(["HABIT", "BOSS", "BONUS"]).optional(),
+  source: z.enum(["HABIT", "BONUS"]).optional(),
 });
 export type HabitLog = z.infer<typeof logSchema>;
 

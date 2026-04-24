@@ -4,7 +4,6 @@ import { Dashboard } from './pages/Dashboard';
 import { Boss } from './pages/Boss';
 import { Login } from './pages/Login';
 import { Stats } from './pages/Stats';
-import { Vault } from './pages/Vault';
 import { Settings } from './pages/Settings';
 import { JuiceOverlay } from './components/JuiceOverlay';
 import { useAuthStore } from './store/useAuthStore';
@@ -111,7 +110,6 @@ function App() {
             <Route path="/dashboard" element={<AuthGuard><Dashboard /></AuthGuard>} />
             <Route path="/boss" element={<AuthGuard><Boss /></AuthGuard>} />
             <Route path="/stats" element={<AuthGuard><Stats /></AuthGuard>} />
-            <Route path="/vault" element={<AuthGuard><Vault /></AuthGuard>} />
             <Route path="/settings" element={<AuthGuard><Settings /></AuthGuard>} />
             
             <Route path="*" element={<Navigate to="/dashboard" replace />} />

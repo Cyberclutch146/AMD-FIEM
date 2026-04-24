@@ -1,6 +1,6 @@
 import React from 'react';
 import { useUserStore } from '../../store/useUserStore';
-import { gameEngine } from '../../lib/gameEngine';
+
 import { m } from 'framer-motion';
 
 export const LevelCard: React.FC = () => {
@@ -8,11 +8,11 @@ export const LevelCard: React.FC = () => {
   
   if (!user) return <div className="h-40 bg-surface-container-low rounded-2xl animate-pulse m-6" />; // Skeleton
 
-  const safeLevel = user.level || 1;
-  const safeXp = user.xp || 0;
-  const nextXp = gameEngine.getXPForNextLevel(safeLevel);
+  const safeLevel = Math.floor((user.healthScore || 0) / 100) + 1;
+  const safeXp = (user.healthScore || 0) % 100;
+  const nextXp = 100;
   const progressPercent = Math.min(100, Math.floor((safeXp / nextXp) * 100));
-  const currentRank = gameEngine.getUserRank(safeLevel);
+  const currentRank = "HEALTH SEEKER";
 
   return (
     <m.section 
@@ -52,7 +52,7 @@ export const LevelCard: React.FC = () => {
           
           <div className="space-y-1.5 pt-1">
              <div className="flex justify-between items-baseline">
-                <span className="text-[10px] font-bold text-on-surface-variant tracking-wider uppercase">Experience</span>
+                <span className="text-[10px] font-bold text-on-surface-variant tracking-wider uppercase">Health Score Milestone</span>
                 <span className="text-[10px] font-bold font-mono text-on-surface-variant">{safeXp.toLocaleString()} / {nextXp.toLocaleString()}</span>
              </div>
             <div className="h-3 bg-surface-container-highest rounded-full overflow-hidden p-0.5 relative">

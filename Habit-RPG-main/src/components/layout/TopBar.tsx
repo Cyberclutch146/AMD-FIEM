@@ -1,7 +1,7 @@
 import React from 'react';
 import { useUserStore } from '../../store/useUserStore';
 import { useNavigate } from 'react-router-dom';
-import { gameEngine } from '../../lib/gameEngine';
+
 import { m } from 'framer-motion';
 
 export const TopBar: React.FC = () => {
@@ -27,7 +27,7 @@ export const TopBar: React.FC = () => {
         </div>
         <div className="flex flex-col">
           <span className="text-sm font-black tracking-tight text-on-surface leading-none">{user.name}</span>
-          <span className="text-[10px] font-bold text-primary tracking-widest uppercase">{gameEngine.getUserRank(user.level)}</span>
+          <span className="text-[10px] font-bold text-primary tracking-widest uppercase">ACTIVE</span>
         </div>
       </div>
       

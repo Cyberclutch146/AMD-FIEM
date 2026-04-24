@@ -5,7 +5,7 @@ import { useAuthStore } from '../store/useAuthStore';
 import { useUserStore } from '../store/useUserStore';
 import { UsersDB } from '../lib/db';
 import { m, AnimatePresence } from 'framer-motion';
-import { gameEngine } from '../lib/gameEngine';
+
 import { AnimatedText } from '../components/animations/AnimatedText';
 
 export const Settings: React.FC = () => {
@@ -93,12 +93,6 @@ export const Settings: React.FC = () => {
                   </h2>
                 )}
              </div>
-             <div className="text-right">
-                <p className="text-xs font-bold text-on-surface-variant uppercase tracking-widest mb-1">Rank</p>
-                <div className="bg-primary/10 px-3 py-1 rounded border border-primary/20 text-primary font-bold tracking-widest text-sm">
-                  {gameEngine.getUserRank(user.level)}
-                </div>
-             </div>
            </div>
         </section>
 
@@ -112,12 +106,6 @@ export const Settings: React.FC = () => {
             description="Activate day-walker retinal burning mode."
           />
 
-          <Toggle 
-            active={!!user.hardMode} 
-            onClick={() => handleUpdateUser({ hardMode: !user.hardMode })}
-            label="Hard Mode"
-            description="Lose XP on broken streaks. Higher rewards."
-          />
 
           <Toggle 
             active={!!user.reducedMotion} 

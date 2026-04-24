@@ -19,15 +19,10 @@ export const AddHabitModal: React.FC<AddHabitModalProps> = ({ isOpen, onClose })
     e.preventDefault();
     if (!title.trim()) return;
 
-    let xpReward = 10;
-    if (difficulty === 'Medium') xpReward = 25;
-    if (difficulty === 'Hard') xpReward = 50;
-
     await addHabit({
       title: title.trim(),
       type,
-      difficulty,
-      xpReward
+      difficulty
     });
     
     setTitle('');

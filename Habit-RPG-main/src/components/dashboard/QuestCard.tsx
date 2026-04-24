@@ -13,7 +13,7 @@ interface Props {
 export const QuestCard: React.FC<Props> = ({ habit, completed }) => {
   const completeHabit = useHabitStore(state => state.completeHabit);
   const [isClicking, setIsClicking] = useState(false);
-  const { playSuccess, playLevelUp, playLootDrop } = useSoundEffects();
+  const { playSuccess } = useSoundEffects();
 
   const getIcon = (type: string) => {
     switch (type) {
@@ -27,12 +27,8 @@ export const QuestCard: React.FC<Props> = ({ habit, completed }) => {
   const handleComplete = async (e: React.MouseEvent) => {
     if (completed || isClicking) return;
     setIsClicking(true);
-    const result = await completeHabit(habit.id, { clientX: e.clientX, clientY: e.clientY });
-    if (result) {
-        if (result.didLevelUp) playLevelUp();
-        else if (result.droppedLoot) playLootDrop();
-        else playSuccess();
-    }
+    await completeHabit(habit.id, { clientX: e.clientX, clientY: e.clientY });
+    playSuccess();
     setIsClicking(false);
   };
 
@@ -58,7 +54,7 @@ export const QuestCard: React.FC<Props> = ({ habit, completed }) => {
           </span>
         </div>
         <span className={`text-[10px] uppercase tracking-wider font-black px-2 py-1 rounded border transition-colors duration-500 ${completed ? "bg-surface-container-highest text-on-surface-variant border-outline-variant/20" : "bg-inverse-surface text-inverse-on-surface shadow-sm border-outline-variant/20"}`}>
-          +{habit.xpReward} XP
+          HEALTH
         </span>
       </div>
       

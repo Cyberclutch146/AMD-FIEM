@@ -64,20 +64,6 @@ export const BottomNav: React.FC = () => {
         )}
       </NavLink>
 
-      <NavLink 
-        to="/vault"
-        onClick={() => playClick()}
-        className="flex flex-col items-center justify-center outline-none"
-      >
-         {({ isActive }) => (
-          <Magnet strength={20}>
-            <m.div whileTap={{ scale: 0.9 }} className={`flex flex-col items-center transition-colors duration-300 ${isActive ? "text-primary" : "text-on-surface-variant hover:text-primary/80"}`}>
-               <span className={`material-symbols-outlined ${isActive && "drop-shadow-[0_0_8px_rgba(var(--color-primary),0.5)]"}`} style={isActive ? { fontVariationSettings: "'FILL' 1" } : {}}>shield</span>
-               <span className="font-label text-[10px] font-bold uppercase tracking-widest mt-1">Vault</span>
-            </m.div>
-          </Magnet>
-        )}
-      </NavLink>
     </nav>
   );
 };

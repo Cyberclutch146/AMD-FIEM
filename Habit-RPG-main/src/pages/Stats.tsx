@@ -34,7 +34,7 @@ export const Stats: React.FC = () => {
                        (log.timestamp instanceof Date ? log.timestamp.toISOString().split('T')[0] : 
                        new Date(log.timestamp).toISOString().split('T')[0]);
       
-      const xp = log.healthScoreAwarded || log.xpAwarded || 10;
+      const xp = log.healthScoreAwarded || 10;
       if (dateStr >= thirtyStr) total30 += xp;
       
       const bucket = days.find(d => d.date === dateStr);
@@ -61,7 +61,7 @@ export const Stats: React.FC = () => {
     }).join(' ');
   };
 
-  const rank = gameEngine.getUserRank(user?.level || 1);
+
 
   // Removed equipItem and unlockSkill since they are no longer used
 
@@ -77,16 +77,9 @@ export const Stats: React.FC = () => {
             <div className="z-20 flex flex-col items-center">
                 <div className="w-16 h-16 bg-surface-container-highest border-2 border-primary rounded-full flex items-center justify-center flex-col blood-shadow mb-2 shadow-2xl relative">
                   <span className="material-symbols-outlined text-4xl text-on-surface">person</span>
-                  
-                  {/* Equipped Weapon indicator overlays */}
-                  {user?.equippedWeapon && (
-                      <div className="absolute -right-2 -bottom-2 w-8 h-8 bg-primary rounded-full border-2 border-surface flex items-center justify-center shadow-lg">
-                          <span className="material-symbols-outlined text-white text-sm">swords</span>
-                      </div>
-                  )}
                 </div>
                 <h2 className="text-xl font-black text-on-surface tracking-tighter uppercase">{user?.name || "HERO"}</h2>
-                <p className="text-[10px] text-primary font-bold tracking-widest uppercase">{rank} / LVL {user?.level || 1}</p>
+                <p className="text-[10px] text-primary font-bold tracking-widest uppercase">COMMANDER</p>
             </div>
         </section>
 
@@ -110,34 +103,7 @@ export const Stats: React.FC = () => {
         {/* Tab View: TRENDS */}
         {activeTab === "TRENDS" && (
             <div className="space-y-6 animate-in slide-in-from-right-4 fade-in duration-300">
-                <section className="flex gap-4">
-                    <div className="bg-surface-container-high p-4 rounded-xl shadow-xl flex-1 border border-outline-variant/10 border-l-4 border-l-primary flex items-center justify-between">
-                        <div>
-                            <p className="font-label text-[10px] tracking-widest text-secondary uppercase mb-1">Health</p>
-                            <p className="text-xl font-black text-on-surface tracking-tighter">{user?.hp}/{user?.maxHp || 100}</p>
-                        </div>
-                        <span className="material-symbols-outlined text-red-500">favorite</span>
-                    </div>
-                    <div className="bg-surface-container-high p-4 rounded-xl shadow-xl flex-1 border border-outline-variant/10 border-l-4 border-l-yellow-500 flex items-center justify-between">
-                        <div>
-                            <p className="font-label text-[10px] tracking-widest text-secondary uppercase mb-1">Gold</p>
-                            <p className="text-xl font-black text-on-surface tracking-tighter">{user?.gold || 0}</p>
-                        </div>
-                        <span className="material-symbols-outlined text-yellow-500">monetization_on</span>
-                    </div>
-                </section>
-                <section className="bg-surface-container-high p-4 rounded-xl shadow-xl border border-outline-variant/10">
-                    <div className="flex justify-between items-center mb-3">
-                        <p className="font-label text-[10px] tracking-widest text-secondary uppercase">Level Progress</p>
-                        <span className="text-xs font-bold text-primary">{user?.xp} / {gameEngine.getXPForNextLevel(user?.level || 1)}</span>
-                    </div>
-                    <div className="w-full bg-surface h-2 rounded-full overflow-hidden">
-                        <div 
-                        className="bg-primary h-full shadow-[0_0_10px_rgba(209,54,57,0.5)] transition-all duration-1000" 
-                        style={{ width: `${Math.min(100, ((user?.xp || 0) / gameEngine.getXPForNextLevel(user?.level || 1)) * 100)}%` }}
-                        ></div>
-                    </div>
-                </section>
+
                 <section className="bg-surface-container rounded-xl overflow-hidden shadow-2xl relative border border-outline-variant/10">
                 <div className="p-4 flex justify-between items-center">
                     <div>
