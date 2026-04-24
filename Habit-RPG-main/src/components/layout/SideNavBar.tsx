@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { useUserStore } from '../../store/useUserStore';
+import { useAuthStore } from '../../store/useAuthStore';
 
 const navItems = [
   { to: '/dashboard', icon: 'dashboard', label: 'Dashboard' },
@@ -8,7 +8,8 @@ const navItems = [
 ];
 
 export const SideNavBar: React.FC = () => {
-  const user = useUserStore(state => state.user);
+  const firebaseUser = useAuthStore(state => state.firebaseUser);
+  const logout = useAuthStore(state => state.logout);
 
   return (
     <nav className="hidden lg:flex flex-col w-[260px] h-screen sticky top-0 left-0 bg-brand-darker/80 backdrop-blur-2xl border-r border-white/[0.06] py-8 z-40 shrink-0">
@@ -50,16 +51,30 @@ export const SideNavBar: React.FC = () => {
         ))}
       </ul>
 
-      <div className="px-6 mt-auto pt-6 border-t border-white/[0.06]">
-        <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-full bg-gradient-to-br from-emerald-500/20 to-cyan-500/20 border border-white/10 flex items-center justify-center">
-            <span className="material-symbols-outlined text-emerald-400 text-[18px]">person</span>
-          </div>
-          <div>
-            <p className="text-[13px] font-semibold text-slate-200 leading-tight">{user?.name || 'User'}</p>
-            <p className="text-[10px] text-emerald-500/60 font-medium tracking-wider uppercase">Online</p>
+      <div className="px-5 mt-auto pt-6 border-t border-white/[0.06]">
+        <div className="flex items-center gap-3 mb-4">
+          {firebaseUser?.photoURL ? (
+            <img src={firebaseUser.photoURL} alt="" className="w-9 h-9 rounded-full object-cover border border-white/10" />
+          ) : (
+            <div className="w-9 h-9 rounded-full bg-gradient-to-br from-emerald-500/20 to-cyan-500/20 border border-white/10 flex items-center justify-center">
+              <span className="material-symbols-outlined text-emerald-400 text-[18px]">person</span>
+            </div>
+          )}
+          <div className="flex-1 min-w-0">
+            <p className="text-[13px] font-semibold text-slate-200 leading-tight truncate">
+              {firebaseUser?.displayName || 'User'}
+            </p>
+            <p className="text-[10px] text-slate-500 truncate">
+              {firebaseUser?.email || ''}
+            </p>
           </div>
         </div>
+        <button onClick={logout}
+          className="w-full flex items-center justify-center gap-2 px-4 py-2 rounded-xl text-[12px] font-semibold text-slate-400 hover:text-red-400 bg-white/[0.03] hover:bg-red-500/[0.08] border border-white/[0.06] hover:border-red-500/20 transition-all"
+        >
+          <span className="material-symbols-outlined text-[16px]">logout</span>
+          Sign Out
+        </button>
       </div>
     </nav>
   );

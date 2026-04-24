@@ -1,4 +1,5 @@
 import { initializeApp, getApps, getApp } from "firebase/app";
+import { getAuth } from "firebase/auth";
 import { getFirestore, enableMultiTabIndexedDbPersistence } from "firebase/firestore";
 import { getAnalytics, isSupported } from "firebase/analytics";
 import { env } from "./env";
@@ -14,6 +15,7 @@ const firebaseConfig = {
 
 // Initialize Firebase
 const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
+const auth = getAuth(app);
 const db = getFirestore(app);
 
 // Enable offline persistence
@@ -32,4 +34,4 @@ isSupported().then((supported) => {
   }
 });
 
-export { app, db, analytics };
+export { app, auth, db, analytics };
