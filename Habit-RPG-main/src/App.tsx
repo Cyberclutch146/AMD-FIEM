@@ -111,8 +111,11 @@ function App() {
   const authInitialized = useAuthStore(state => state.initialized);
 
   useEffect(() => {
-    const unsub = initAuth();
-    return unsub;
+    let unsub: (() => void) | undefined;
+    initAuth().then(u => {
+      unsub = u;
+    });
+    return () => { if (unsub) unsub(); };
   }, [initAuth]);
 
   // Still loading auth state

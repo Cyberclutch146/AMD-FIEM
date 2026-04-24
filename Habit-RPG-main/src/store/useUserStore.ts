@@ -32,7 +32,7 @@ export const useUserStore = create<UserStore>((set, get) => ({
         const newUser: User = {
           id: uid,
           name: '',
-          email: '',
+          email: 'guest@example.com', // Placeholder that satisfies Zod, will be updated by App.tsx
           streak: 0,
           lastCheckInDate: null,
           theme: 'dark',
