@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { Habit, HabitLog } from '../lib/db';
 import { gameEngine } from '../lib/gameEngine';
-import { useJuiceStore } from './useJuiceStore';
+
 import { trackEvent } from '../lib/analytics';
 import { onSnapshot, collection } from 'firebase/firestore';
 import { db } from '../lib/firebase';
@@ -159,7 +159,7 @@ export const useHabitStore = create<HabitStore>((set, get) => ({
     });
   },
 
-  completeHabit: async (habitId: string, clickEvent?: { clientX: number, clientY: number }) => {
+  completeHabit: async (habitId: string, _clickEvent?: { clientX: number, clientY: number }) => {
     const user = useUserStore.getState().user;
     const { habits, logs } = get();
     if (!user) return; 
@@ -233,9 +233,7 @@ export const useHabitStore = create<HabitStore>((set, get) => ({
       });
 
       trackEvent("habit_completed", { habitId, healthScoreAwarded: baseScore });
-      if (clickEvent) {
-         useJuiceStore.getState().spawnFloatingXP(baseScore, clickEvent.clientX, clickEvent.clientY);
-      }
+
       if (streakResult.streak === 1 && user.streak > 1) trackEvent("streak_broken", { oldStreak: user.streak });
     }).catch(e => {
       console.error("Failed to sync completion for", logId, e);

@@ -3,97 +3,78 @@
 @tailwind utilities;
 
 @layer base {
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
   .material-symbols-outlined {
     font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
   }
-  
-  body {
-    min-height: 100dvh;
-    background-color: #0b1326;
-    color: #dae2fd;
+
+  html, body, #root {
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
   }
 
-  /* Scrollbar styling */
-  ::-webkit-scrollbar {
-    width: 6px;
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: #060e20;
+    color: #dae2fd;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
-  ::-webkit-scrollbar-track {
-    background: transparent;
+
+  /* Custom scrollbar */
+  ::-webkit-scrollbar { width: 5px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: rgba(78, 222, 163, 0.15); border-radius: 999px; }
+  ::-webkit-scrollbar-thumb:hover { background: rgba(78, 222, 163, 0.35); }
+}
+
+@layer components {
+  /* Glassmorphism card */
+  .glass-card {
+    @apply rounded-2xl border border-white/[0.08] shadow-xl;
+    background: linear-gradient(135deg, rgba(22, 30, 50, 0.85) 0%, rgba(15, 22, 40, 0.92) 100%);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
   }
-  ::-webkit-scrollbar-thumb {
-    background: rgba(78, 222, 163, 0.2);
-    border-radius: 999px;
-  }
-  ::-webkit-scrollbar-thumb:hover {
-    background: rgba(78, 222, 163, 0.4);
+
+  /* Gradient accent border on left */
+  .accent-border-left {
+    border-left: 3px solid;
+    border-image: linear-gradient(to bottom, #4edea3, #00a2e6) 1;
   }
 }
 
 @layer utilities {
-  /* Glass panel — the core card style */
-  .glass-panel {
-    background-color: rgba(34, 42, 61, 0.4);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-  }
-
-  /* Aurora glow effect behind hero cards */
-  .aurora-glow {
-    position: relative;
-  }
+  /* Aurora glow behind hero cards */
   .aurora-glow::before {
     content: '';
     position: absolute;
-    top: -50%;
-    left: -50%;
-    width: 200%;
-    height: 200%;
-    background: radial-gradient(circle, rgba(16, 185, 129, 0.1) 0%, transparent 50%);
-    z-index: -1;
+    top: -40%;
+    left: -30%;
+    width: 160%;
+    height: 160%;
+    background: radial-gradient(ellipse, rgba(16, 185, 129, 0.12) 0%, transparent 60%);
+    z-index: 0;
     pointer-events: none;
   }
 
-  /* Circular chart helper classes */
-  .circular-chart {
-    display: block;
-    margin: 0 auto;
-    max-width: 80%;
-    max-height: 250px;
-  }
-  .circle-bg {
-    fill: none;
-    stroke: rgba(255,255,255,0.05);
-    stroke-width: 3.8;
-  }
-  .circle {
-    fill: none;
-    stroke-width: 2.8;
-    stroke-linecap: round;
-  }
-  .circle-gradient {
-    stroke: url(#gradient);
-  }
+  /* SVG chart helpers */
+  .circle-bg { fill: none; stroke: rgba(255,255,255,0.06); stroke-width: 3.8; }
+  .circle { fill: none; stroke-width: 3; stroke-linecap: round; }
 
-  /* Animations */
-  @keyframes aurora-1 {
-    0%, 100% { transform: translateY(0) scale(1); }
-    50% { transform: translateY(10%) scale(1.1); }
-  }
-  @keyframes aurora-2 {
-    0%, 100% { transform: translateX(0) scale(1); }
-    50% { transform: translateX(-10%) scale(0.9); }
-  }
-  @keyframes aurora-3 {
-    0%, 100% { transform: translateY(0) scale(1); }
-    50% { transform: translateY(-10%) scale(1.1); }
-  }
   @keyframes shimmer {
     0% { transform: translateX(-100%); }
-    100% { transform: translateX(100%); }
+    100% { transform: translateX(200%); }
   }
-
-  .animate-aurora-1 { animation: aurora-1 15s ease infinite alternate; }
-  .animate-aurora-2 { animation: aurora-2 20s ease infinite alternate; }
-  .animate-aurora-3 { animation: aurora-3 18s ease infinite alternate; }
+  @keyframes pulse-glow {
+    0%, 100% { box-shadow: 0 0 20px rgba(78, 222, 163, 0.15); }
+    50% { box-shadow: 0 0 40px rgba(78, 222, 163, 0.3); }
+  }
+  .animate-pulse-glow { animation: pulse-glow 3s ease-in-out infinite; }
 }

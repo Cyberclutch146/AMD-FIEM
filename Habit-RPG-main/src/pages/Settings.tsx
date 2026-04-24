@@ -1,221 +1,127 @@
 import React, { useState } from 'react';
-import { TopBar } from '../components/layout/TopBar';
-import { BottomNav } from '../components/layout/BottomNav';
-import { useAuthStore } from '../store/useAuthStore';
 import { useUserStore } from '../store/useUserStore';
 import { UsersDB } from '../lib/db';
-import { m, AnimatePresence } from 'framer-motion';
-
-import { AnimatedText } from '../components/animations/AnimatedText';
 
 export const Settings: React.FC = () => {
-  const logout = useAuthStore(state => state.logout);
   const user = useUserStore(state => state.user);
+  const updateName = useUserStore(state => state.updateName);
   
   const [editingName, setEditingName] = useState(false);
   const [newName, setNewName] = useState(user?.name || '');
-  const [showManual, setShowManual] = useState(false);
 
   if (!user) return null;
 
-  const handleUpdateUser = async (updates: Partial<typeof user>) => {
-    try {
-      await UsersDB.update(user.id, updates);
-    } catch (e) {
-      console.error(e);
-    }
-  };
-
-  const handleExport = () => {
-    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(user));
-    const downloadAnchorNode = document.createElement('a');
-    downloadAnchorNode.setAttribute("href", dataStr);
-    downloadAnchorNode.setAttribute("download", "habit_rpg_export.json");
-    document.body.appendChild(downloadAnchorNode);
-    downloadAnchorNode.click();
-    downloadAnchorNode.remove();
-  };
-
-  const saveName = () => {
-    if (newName.trim() && newName !== user.name) {
-      handleUpdateUser({ name: newName.trim() });
+  const saveName = async () => {
+    const trimmed = newName.trim();
+    if (trimmed && trimmed !== user.name) {
+      updateName(trimmed);
+      try {
+        await UsersDB.update(user.id, { name: trimmed });
+      } catch (e) {
+        console.error(e);
+      }
     }
     setEditingName(false);
   };
 
-  const Toggle = ({ active, onClick, label, description }: { active: boolean, onClick: () => void, label: string, description: string }) => (
-    <div onClick={onClick} className="bg-surface-container p-4 rounded-xl flex items-center justify-between border border-surface-bright/20 cursor-pointer active:scale-[0.98] transition-transform">
-      <div>
-        <p className="font-bold text-on-surface">{label}</p>
-        <p className="text-[10px] text-on-surface-variant mt-1 max-w-[200px]">{description}</p>
-      </div>
-      <div className={`w-12 h-6 rounded-full p-1 relative transition-colors ${active ? 'bg-primary border-primary' : 'bg-surface-container-highest border-outline-variant/30 border'}`}>
-        <m.div 
-          layout
-          initial={false}
-          animate={{ x: active ? 24 : 0 }}
-          className={`w-4 h-4 rounded-full ${active ? 'bg-on-primary' : 'bg-outline-variant'}`} 
-        />
-      </div>
-    </div>
-  );
+  const handleExport = () => {
+    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(user));
+    const anchor = document.createElement('a');
+    anchor.setAttribute("href", dataStr);
+    anchor.setAttribute("download", "nutriintel_export.json");
+    document.body.appendChild(anchor);
+    anchor.click();
+    anchor.remove();
+  };
 
   return (
-    <>
-      <TopBar />
-      
-      <main className="pt-[100px] pb-32 px-6 w-full flex-1 overflow-y-auto space-y-6 custom-scrollbar">
-        <div className="mb-8">
-          <m.h1 layoutId="page-title" className="text-3xl font-black tracking-tighter uppercase text-on-surface">
-            <AnimatedText text="Settings" />
-          </m.h1>
-          <p className="text-on-surface-variant font-body text-sm mt-1">Configure your HUD.</p>
+    <main className="p-6 lg:p-10 max-w-3xl space-y-8">
+      {/* Header */}
+      <div>
+        <h1 className="text-3xl font-display font-extrabold text-white tracking-tight">Settings</h1>
+        <p className="text-sm text-slate-400 mt-1">Manage your profile and preferences</p>
+      </div>
+
+      {/* Profile Card */}
+      <section className="glass-card p-8 relative overflow-hidden">
+        <div className="absolute -right-8 -top-8 w-32 h-32 bg-emerald-500/[0.06] rounded-full blur-3xl pointer-events-none" />
+        <h3 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-4">Your Profile</h3>
+        
+        <div className="flex items-center gap-5 relative z-10">
+          <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-emerald-500/20 to-cyan-500/20 border border-white/10 flex items-center justify-center shrink-0">
+            <span className="material-symbols-outlined text-emerald-400 text-3xl">person</span>
+          </div>
+          <div className="flex-1">
+            {editingName ? (
+              <div className="flex items-center gap-2">
+                <input
+                  autoFocus
+                  value={newName}
+                  onChange={e => setNewName(e.target.value)}
+                  onBlur={saveName}
+                  onKeyDown={e => e.key === 'Enter' && saveName()}
+                  placeholder="Enter your name..."
+                  className="bg-white/[0.06] text-white px-4 py-2.5 rounded-xl outline-none border border-emerald-500/30 text-lg font-display font-bold flex-1 focus:ring-1 focus:ring-emerald-500/30 transition-all"
+                />
+                <button
+                  onClick={saveName}
+                  className="px-4 py-2.5 bg-emerald-500 text-white rounded-xl text-sm font-semibold hover:bg-emerald-600 transition-colors shrink-0"
+                >
+                  Save
+                </button>
+              </div>
+            ) : (
+              <div>
+                <h2
+                  onClick={() => { setEditingName(true); setNewName(user.name); }}
+                  className="text-xl font-display font-bold text-white cursor-pointer hover:text-emerald-400 transition-colors flex items-center gap-2 group"
+                >
+                  {user.name}
+                  <span className="material-symbols-outlined text-[14px] text-slate-600 group-hover:text-emerald-400 transition-colors">edit</span>
+                </h2>
+                <p className="text-sm text-slate-500 mt-0.5">Click to edit your display name</p>
+              </div>
+            )}
+          </div>
         </div>
 
-        {/* Profile Card */}
-        <section className="bg-gradient-to-br from-surface-container to-surface-container-high border border-surface-bright/20 rounded-2xl p-6 relative overflow-hidden">
-           <div className="absolute -right-4 -top-4 w-24 h-24 bg-primary/10 rounded-full blur-xl pointer-events-none" />
-           <div className="flex items-start justify-between">
-             <div>
-                <p className="text-xs font-bold text-on-surface-variant uppercase tracking-widest mb-1">Operative</p>
-                {editingName ? (
-                  <input 
-                    autoFocus
-                    value={newName}
-                    onChange={e => setNewName(e.target.value)}
-                    onBlur={saveName}
-                    onKeyDown={e => e.key === 'Enter' && saveName()}
-                    className="bg-surface-container-highest text-on-surface px-3 py-1 rounded outline-none border border-primary/50 text-xl font-bold w-full max-w-[200px]"
-                  />
-                ) : (
-                  <h2 onClick={() => setEditingName(true)} className="text-2xl font-black text-on-surface tracking-tight cursor-pointer hover:text-primary transition-colors flex items-center gap-2">
-                    {user.name} <span className="material-symbols-outlined text-[16px] text-on-surface-variant">edit</span>
-                  </h2>
-                )}
-             </div>
-           </div>
-        </section>
+        {/* Stats Row */}
+        <div className="grid grid-cols-3 gap-4 mt-8 pt-6 border-t border-white/[0.06]">
+          <div className="text-center">
+            <p className="text-3xl font-display font-extrabold text-emerald-400">{user.healthScore || 0}</p>
+            <p className="text-[10px] text-slate-500 uppercase tracking-wider font-semibold mt-1">Health Score</p>
+          </div>
+          <div className="text-center">
+            <p className="text-3xl font-display font-extrabold text-cyan-400">{user.streak || 0}</p>
+            <p className="text-[10px] text-slate-500 uppercase tracking-wider font-semibold mt-1">Day Streak</p>
+          </div>
+          <div className="text-center">
+            <p className="text-3xl font-display font-extrabold text-purple-400">{user.consistencyScore || 0}</p>
+            <p className="text-[10px] text-slate-500 uppercase tracking-wider font-semibold mt-1">Consistency</p>
+          </div>
+        </div>
+      </section>
 
-        <section className="space-y-4">
-          <h2 className="text-sm font-bold tracking-widest text-on-surface-variant uppercase mt-8">Preferences</h2>
-          
-          <Toggle 
-            active={user.theme === 'light'} 
-            onClick={() => handleUpdateUser({ theme: user.theme === 'light' ? 'dark' : 'light' })}
-            label="Light Mode"
-            description="Activate day-walker retinal burning mode."
-          />
+      {/* Data Management */}
+      <section className="space-y-3">
+        <h3 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Data Management</h3>
+        
+        <button onClick={handleExport}
+          className="w-full glass-card p-5 flex items-center justify-between hover:bg-white/[0.04] transition-colors text-left group"
+        >
+          <div>
+            <p className="text-sm font-semibold text-emerald-400">Export JSON Data</p>
+            <p className="text-xs text-slate-500 mt-0.5">Download a copy of your progress</p>
+          </div>
+          <span className="material-symbols-outlined text-emerald-400 group-hover:translate-x-0.5 transition-transform">download</span>
+        </button>
+      </section>
 
-
-          <Toggle 
-            active={!!user.reducedMotion} 
-            onClick={() => handleUpdateUser({ reducedMotion: !user.reducedMotion })}
-            label="Reduced Motion"
-            description="Disables heavy animations for low-end devices."
-          />
-        </section>
-
-        <section className="space-y-4 mt-8">
-          <h2 className="text-sm font-bold tracking-widest text-on-surface-variant uppercase">Data Management</h2>
-          
-          <button onClick={() => setShowManual(true)} className="w-full bg-surface-container p-4 rounded-xl flex items-center justify-between border border-surface-bright/20 hover:bg-surface-container-high transition-colors text-left relative overflow-hidden group">
-            <div className="absolute inset-0 bg-primary/5 translate-x-[-100%] group-hover:translate-x-0 transition-transform duration-500 ease-out" />
-            <div className="relative">
-              <p className="font-bold text-on-surface">Instruction Manual</p>
-              <p className="text-[10px] text-on-surface-variant mt-1">Learn system mechanics and ranks.</p>
-            </div>
-            <span className="material-symbols-outlined text-on-surface-variant relative">menu_book</span>
-          </button>
-
-          <button onClick={handleExport} className="w-full bg-surface-container p-4 rounded-xl flex items-center justify-between border border-surface-bright/20 hover:bg-surface-container-high transition-colors text-left">
-            <div>
-              <p className="font-bold text-primary">Export JSON Data</p>
-              <p className="text-[10px] text-on-surface-variant mt-1">Download a copy of your progress.</p>
-            </div>
-            <span className="material-symbols-outlined text-primary">download</span>
-          </button>
-
-          <button className="w-full bg-error-container/10 p-4 rounded-xl flex items-center justify-between border border-error-container/30 hover:bg-error-container/20 transition-colors text-left">
-            <div>
-              <p className="font-bold text-error">Wipe Data & Reset</p>
-              <p className="text-[10px] text-error/70 mt-1">This action is irreversible.</p>
-            </div>
-            <span className="material-symbols-outlined text-error">delete_forever</span>
-          </button>
-        </section>
-
-        <section className="pt-8">
-           <button 
-             onClick={logout}
-             className="w-full flex items-center justify-center gap-2 py-4 rounded-lg bg-surface-container-high text-on-surface-variant font-bold uppercase tracking-widest text-sm hover:text-white transition-colors border border-outline-variant/20"
-           >
-             <span className="material-symbols-outlined text-[18px]">logout</span> Log Out
-           </button>
-        </section>
-      </main>
-
-      <AnimatePresence>
-        {showManual && (
-          <m.div 
-            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 bg-background/80 backdrop-blur-md flex items-center justify-center p-6"
-            onClick={() => setShowManual(false)}
-          >
-            <m.div 
-              initial={{ y: 50, scale: 0.95 }} animate={{ y: 0, scale: 1 }} exit={{ y: 20, scale: 0.95 }}
-              onClick={e => e.stopPropagation()}
-              className="bg-surface-container border border-outline/20 p-6 rounded-2xl w-full max-w-md max-h-[80vh] overflow-y-auto"
-            >
-              <h2 className="text-2xl font-black mb-4 uppercase tracking-tight text-primary">System Manual</h2>
-              
-              <div className="space-y-6 text-sm text-on-surface-variant font-body mb-6 w-full pr-2 pb-4">
-                <section>
-                  <h3 className="font-bold text-primary uppercase tracking-widest text-xs mb-2 border-b border-outline-variant/20 pb-1">Core Progression</h3>
-                  <div className="space-y-3">
-                    <p><strong className="text-on-surface">XP & Levels:</strong> By completing daily recurring habits, you gain XP. You level up when you surpass the required XP threshold. XP scaling is quadratic, requiring more effort as you grow.</p>
-                    <p><strong className="text-on-surface">Ranks:</strong> Your level directly determines your Rank (e.g. Bronze III, Apex I, or GOD tier). Ranking up unlocks new visual prestige.</p>
-                    <p><strong className="text-on-surface">Streaks:</strong> Consistently executing habits builds your combo. Combo directly multiplies the XP and gold value you receive.</p>
-                  </div>
-                </section>
-
-                <section>
-                  <h3 className="font-bold text-amber-500 uppercase tracking-widest text-xs mb-2 border-b border-outline-variant/20 pb-1">The Vault & Loot</h3>
-                  <div className="space-y-3">
-                    <p><strong className="text-on-surface">Gold:</strong> Defeating bosses and achieving high streaks drops Gold coins. Gold can be spent in the <strong className="text-amber-500">Vault</strong>.</p>
-                    <p><strong className="text-on-surface">Weapons:</strong> Purchasing a Sword in the Vault grants a permanent +15% chance to score a Critical Hit on any habit completion (x2 Damage!).</p>
-                    <p><strong className="text-on-surface">Cosmetics:</strong> Buy Themes (Crimson, Abyssal, Cyberpunk) in the Vault to customize your HUD.</p>
-                  </div>
-                </section>
-
-                <section>
-                  <h3 className="font-bold text-blue-500 uppercase tracking-widest text-xs mb-2 border-b border-outline-variant/20 pb-1">Combat & Survival</h3>
-                  <div className="space-y-3">
-                    <p><strong className="text-on-surface">Boss Battles:</strong> Your habit completion deals damage to Bosses. Bosses are weak to specific habit categories (e.g., Workout, Steps), dealing 150% damage.</p>
-                    <p><strong className="text-on-surface">HP & Hard Mode:</strong> If Hard Mode is enabled, failing to complete a daily habit will cause you to take damage based on the habit difficulty. If your HP reaches 0, you lose your streak and suffer an XP penalty!</p>
-                    <p><strong className="text-on-surface">Shields:</strong> Buy Streak Shields in the Vault. They passively consume themselves to protect your streak and HP if you miss a single day.</p>
-                  </div>
-                </section>
-                
-                <section>
-                  <h3 className="font-bold text-green-500 uppercase tracking-widest text-xs mb-2 border-b border-outline-variant/20 pb-1">Classes</h3>
-                  <div className="space-y-3">
-                    <p><strong className="text-on-surface">Class Bonus:</strong> At character creation, you picked a class (Warrior, Mage, Rogue). Your class gives you a +50% passive damage bonus to specific categories. E.g. Warriors deal massive damage when completing Workout habits.</p>
-                  </div>
-                </section>
-              </div>
-
-              <button 
-                onClick={() => setShowManual(false)}
-                className="w-full py-3 bg-primary text-on-primary rounded font-bold uppercase tracking-widest text-sm active:scale-95 transition-transform"
-              >
-                Acknowledge
-              </button>
-            </m.div>
-          </m.div>
-        )}
-      </AnimatePresence>
-
-      <BottomNav />
-    </>
+      {/* App Info */}
+      <div className="text-center pt-4 border-t border-white/[0.04]">
+        <p className="text-xs text-slate-600">NutriIntel — Smart Food Decision System</p>
+        <p className="text-[10px] text-slate-700 mt-1">All data is stored securely in the cloud</p>
+      </div>
+    </main>
   );
 };
