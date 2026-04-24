@@ -130,7 +130,7 @@ export const useHabitStore = create<HabitStore>((set, get) => ({
 
     const updatedUser = {
       ...user,
-      healthScore: (user.healthScore || 0) + healthScoreGained,
+      healthScore: Math.max(0, Math.min(100, (user.healthScore || 0) + healthScoreGained)),
       consistencyScore: newConsistency
     };
 

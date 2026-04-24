@@ -4,8 +4,6 @@ import { useUserStore } from '../../store/useUserStore';
 
 const navItems = [
   { to: '/dashboard', icon: 'dashboard', label: 'Dashboard' },
-  { to: '/food-log', icon: 'restaurant', label: 'Food Log' },
-  { to: '/patterns', icon: 'insights', label: 'Health Patterns' },
   { to: '/settings', icon: 'settings', label: 'Settings' },
 ];
 
@@ -14,7 +12,6 @@ export const SideNavBar: React.FC = () => {
 
   return (
     <nav className="hidden lg:flex flex-col w-[260px] h-screen sticky top-0 left-0 bg-brand-darker/80 backdrop-blur-2xl border-r border-white/[0.06] py-8 z-40 shrink-0">
-      {/* Logo */}
       <div className="px-7 mb-10">
         <h1 className="text-[22px] font-display font-extrabold bg-gradient-to-r from-emerald-400 via-emerald-300 to-cyan-400 bg-clip-text text-transparent tracking-tight">
           NutriIntel
@@ -24,7 +21,6 @@ export const SideNavBar: React.FC = () => {
         </p>
       </div>
 
-      {/* Nav Items */}
       <ul className="flex flex-col gap-1 px-4 flex-1">
         {navItems.map(item => (
           <li key={item.to}>
@@ -54,7 +50,6 @@ export const SideNavBar: React.FC = () => {
         ))}
       </ul>
 
-      {/* User */}
       <div className="px-6 mt-auto pt-6 border-t border-white/[0.06]">
         <div className="flex items-center gap-3">
           <div className="w-9 h-9 rounded-full bg-gradient-to-br from-emerald-500/20 to-cyan-500/20 border border-white/10 flex items-center justify-center">

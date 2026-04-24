@@ -7,14 +7,13 @@ import { TopNavBar } from './components/layout/TopNavBar';
 import { useUserStore } from './store/useUserStore';
 import { useHabitStore } from './store/useHabitStore';
 
-// Error Boundary
 class ErrorBoundary extends Component<{ children: ReactNode }, { hasError: boolean; error: Error | null }> {
   constructor(props: { children: ReactNode }) {
     super(props);
     this.state = { hasError: false, error: null };
   }
   static getDerivedStateFromError(error: Error) { return { hasError: true, error }; }
-  componentDidCatch(error: Error, errorInfo: ErrorInfo) { console.error("App error:", error, errorInfo); }
+  componentDidCatch(error: Error, info: ErrorInfo) { console.error("App error:", error, info); }
   render() {
     if (this.state.hasError) {
       return (
@@ -63,8 +62,6 @@ function App() {
           <Routes>
             <Route path="/" element={<Dashboard />} />
             <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/food-log" element={<Dashboard />} />
-            <Route path="/patterns" element={<Dashboard />} />
             <Route path="/settings" element={<Settings />} />
             <Route path="*" element={<Navigate to="/dashboard" replace />} />
           </Routes>

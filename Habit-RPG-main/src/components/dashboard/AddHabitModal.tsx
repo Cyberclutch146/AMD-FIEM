@@ -1,15 +1,15 @@
 import React, { useState, useEffect, useRef } from 'react';
 import ReactDOM from 'react-dom';
 import { useHabitStore } from '../../store/useHabitStore';
-import { searchFood, FoodSearchResult, nutriscoreToFoodType, nutriscoreToTag } from '../../lib/openFoodFacts';
+import { searchFood, FoodSearchResult, nutriscoreToFoodType } from '../../lib/openFoodFacts';
 
-interface AddHabitModalProps {
+interface Props {
   isOpen: boolean;
   onClose: () => void;
 }
 
-export const AddHabitModal: React.FC<AddHabitModalProps> = ({ isOpen, onClose }) => {
-  const addHabit = useHabitStore(state => state.addHabit);
+export const AddHabitModal: React.FC<Props> = ({ isOpen, onClose }) => {
+  const logFood = useHabitStore(state => state.logFood);
   const [searchQuery, setSearchQuery] = useState('');
   const [results, setResults] = useState<FoodSearchResult[]>([]);
   const [selectedFood, setSelectedFood] = useState<FoodSearchResult | null>(null);
@@ -34,16 +34,11 @@ export const AddHabitModal: React.FC<AddHabitModalProps> = ({ isOpen, onClose })
     if (!isOpen) { setSearchQuery(''); setResults([]); setSelectedFood(null); setMealTime('Morning'); }
   }, [isOpen]);
 
-  const handleSelectFood = (food: FoodSearchResult) => { setSelectedFood(food); setResults([]); setSearchQuery(food.name); };
-
   const handleSubmit = async () => {
     if (!selectedFood || submitting) return;
     setSubmitting(true);
-    await addHabit({
-      title: selectedFood.name + (selectedFood.brand ? ` (${selectedFood.brand})` : ''),
-      type: nutriscoreToFoodType(selectedFood.nutriscoreGrade),
-      difficulty: mealTime,
-    });
+    const foodType = nutriscoreToFoodType(selectedFood.nutriscoreGrade);
+    await logFood(foodType, mealTime);
     setSubmitting(false);
     onClose();
   };
@@ -63,16 +58,13 @@ export const AddHabitModal: React.FC<AddHabitModalProps> = ({ isOpen, onClose })
 
   return ReactDOM.createPortal(
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-      {/* Backdrop */}
       <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" onClick={onClose} />
-
-      {/* Modal */}
-      <div className="relative w-full max-w-lg glass-card p-8 max-h-[90vh] overflow-y-auto animate-in fade-in zoom-in-95 duration-200">
+      <div className="relative w-full max-w-lg glass-card p-8 max-h-[90vh] overflow-y-auto">
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
           <div>
             <h2 className="text-2xl font-display font-extrabold text-white tracking-tight">Log Meal</h2>
-            <p className="text-sm text-slate-500 mt-0.5">Search for a food item</p>
+            <p className="text-sm text-slate-500 mt-0.5">Search and log what you ate</p>
           </div>
           <button onClick={onClose} className="p-2 rounded-xl hover:bg-white/[0.06] text-slate-500 hover:text-slate-300 transition-colors">
             <span className="material-symbols-outlined text-[20px]">close</span>
@@ -97,7 +89,7 @@ export const AddHabitModal: React.FC<AddHabitModalProps> = ({ isOpen, onClose })
         {results.length > 0 && !selectedFood && (
           <div className="mb-5 rounded-xl border border-white/[0.08] overflow-hidden max-h-56 overflow-y-auto bg-brand-dark/90">
             {results.map(food => (
-              <button key={food.id} onClick={() => handleSelectFood(food)}
+              <button key={food.id} onClick={() => { setSelectedFood(food); setResults([]); setSearchQuery(food.name); }}
                 className="w-full flex items-center gap-3 px-4 py-3 text-left hover:bg-white/[0.06] transition-colors border-b border-white/[0.04] last:border-0"
               >
                 {food.imageUrl ? (
@@ -130,16 +122,10 @@ export const AddHabitModal: React.FC<AddHabitModalProps> = ({ isOpen, onClose })
                 <p className="text-sm font-semibold text-white">{selectedFood.name}</p>
                 {selectedFood.brand && <p className="text-xs text-slate-500">{selectedFood.brand}</p>}
               </div>
-              <div className="flex items-center gap-2">
-                <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${getNutriscoreColor(selectedFood.nutriscoreGrade)}`}>
-                  {selectedFood.nutriscoreGrade !== 'unknown' ? selectedFood.nutriscoreGrade.toUpperCase() : '?'}
-                </span>
-                <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${
-                  nutriscoreToFoodType(selectedFood.nutriscoreGrade) === 'Healthy' ? 'bg-emerald-500/15 text-emerald-400' : 'bg-orange-500/15 text-orange-400'
-                }`}>{nutriscoreToTag(selectedFood.nutriscoreGrade)}</span>
-              </div>
+              <span className={`px-2.5 py-1 rounded-full text-[10px] font-bold ${
+                nutriscoreToFoodType(selectedFood.nutriscoreGrade) === 'Healthy' ? 'bg-emerald-500/15 text-emerald-400' : 'bg-orange-500/15 text-orange-400'
+              }`}>{nutriscoreToFoodType(selectedFood.nutriscoreGrade) === 'Healthy' ? '🥗 Healthy' : '🍔 Junk'}</span>
             </div>
-            {/* Macros Grid */}
             <div className="grid grid-cols-3 gap-2">
               {[
                 { val: selectedFood.calories, label: 'kcal', color: 'text-white' },
@@ -155,6 +141,11 @@ export const AddHabitModal: React.FC<AddHabitModalProps> = ({ isOpen, onClose })
                 </div>
               ))}
             </div>
+            <p className="text-xs text-slate-500 mt-3 text-center">
+              {nutriscoreToFoodType(selectedFood.nutriscoreGrade) === 'Healthy'
+                ? '✨ This will increase your health score!'
+                : '⚠️ This will decrease your health score'}
+            </p>
           </div>
         )}
 
@@ -171,7 +162,7 @@ export const AddHabitModal: React.FC<AddHabitModalProps> = ({ isOpen, onClose })
               <button key={key} onClick={() => setMealTime(key)}
                 className={`py-2.5 rounded-xl text-[11px] font-semibold transition-all border ${
                   mealTime === key
-                    ? 'bg-emerald-500/15 text-emerald-400 border-emerald-500/25 shadow-inner'
+                    ? 'bg-emerald-500/15 text-emerald-400 border-emerald-500/25'
                     : 'bg-white/[0.03] text-slate-500 border-white/[0.06] hover:bg-white/[0.06]'
                 }`}
               >
