@@ -8,166 +8,74 @@
   }
   
   body {
-    min-height: max(884px, 100dvh);
-    background-color: var(--color-background);
-    color: var(--color-on-background);
+    min-height: 100dvh;
+    background-color: #0b1326;
+    color: #dae2fd;
   }
 
-  :root {
-    --color-on-secondary-fixed: #1b1c1c;
-    --color-on-surface-variant: #403e3d;
-    --color-outline: #756f6e;
-    --color-on-tertiary-fixed: #1b1c1c;
-    --color-on-error-container: #410002;
-    --color-on-error: #ffffff;
-    --color-on-secondary-container: #1d192b;
-    --color-on-tertiary-fixed-variant: #474746;
-    --color-on-background: #171616;
-    --color-background: #faf8f7;
-    --color-outline-variant: #cec5c4;
-    --color-on-tertiary-container: #111010;
-    --color-error: #ba1a1a;
-    --color-on-primary: #ffffff;
-    --color-primary-fixed: #ffdad7;
-    --color-on-tertiary: #ffffff;
-    --color-error-container: #ffdad6;
-    --color-secondary-fixed: #e3e2e2;
-    --color-surface-container-highest: #eae7e6;
-    --color-surface-container: #ffffff;
-    --color-on-primary-fixed: #410004;
-    --color-surface-tint: #b62129;
-    --color-primary: #b62129;
-    --color-tertiary-fixed-dim: #c8c6c5;
-    --color-primary-container: #ffdad7;
-    --color-on-primary-fixed-variant: #930015;
-    --color-inverse-primary: #ffb3ae;
-    --color-tertiary-fixed: #e4e2e1;
-    --color-inverse-on-surface: #f4f0ef;
-    --color-surface-container-low: #f5f2f1;
-    --color-tertiary: #5d5e5e;
-    --color-secondary-container: #e8def8;
-    --color-surface-container-high: #f7f4f2;
-    --color-secondary: #625b71;
-    --color-surface: #faf8f7;
-    --color-on-surface: #171616;
-    --color-surface-dim: #e0dada;
-    --color-surface-container-lowest: #ffffff;
-    --color-surface-bright: #faf8f7;
-    --color-on-secondary: #ffffff;
-    --color-inverse-surface: #313030;
-    --color-tertiary-container: #f9f7f6;
-    --color-on-primary-container: #410002;
-    --color-on-secondary-fixed-variant: #464747;
-    --color-primary-fixed-dim: #ffb3ae;
-    --color-secondary-fixed-dim: #c7c6c6;
-    --color-surface-variant: #f2ebea;
+  /* Scrollbar styling */
+  ::-webkit-scrollbar {
+    width: 6px;
   }
-
-  .dark {
-    --color-on-secondary-fixed: #1b1c1c;
-    --color-on-surface-variant: #e3bebb;
-    --color-outline: #aa8986;
-    --color-on-tertiary-fixed: #1b1c1c;
-    --color-on-error-container: #ffdad6;
-    --color-on-error: #ffffff;
-    --color-on-secondary-container: #b5b5b5;
-    --color-on-tertiary-fixed-variant: #474746;
-    --color-on-background: #e5e2e1;
-    --color-background: #131313;
-    --color-outline-variant: #5a403e;
-    --color-on-tertiary-container: #f9f7f6;
-    --color-error: #cf222e;
-    --color-on-primary: #ffffff;
-    --color-primary-fixed: #ffdad7;
-    --color-on-tertiary: #303030;
-    --color-error-container: #93000a;
-    --color-secondary-fixed: #e3e2e2;
-    --color-surface-container-highest: #353534;
-    --color-surface-container: #201f1f;
-    --color-on-primary-fixed: #410004;
-    --color-surface-tint: #d32f2f;
-    --color-primary: #d32f2f;
-    --color-tertiary-fixed-dim: #c8c6c5;
-    --color-primary-container: #7f1d1d;
-    --color-on-primary-fixed-variant: #930015;
-    --color-inverse-primary: #ffb3ae;
-    --color-tertiary-fixed: #e4e2e1;
-    --color-inverse-on-surface: #313030;
-    --color-surface-container-low: #1c1b1b;
-    --color-tertiary: #c8c6c5;
-    --color-secondary-container: #464747;
-    --color-surface-container-high: #2a2a2a;
-    --color-secondary: #c7c6c6;
-    --color-surface: #131313;
-    --color-on-surface: #e5e2e1;
-    --color-surface-dim: #131313;
-    --color-surface-container-lowest: #0e0e0e;
-    --color-surface-bright: #3a3939;
-    --color-on-secondary: #303031;
-    --color-inverse-surface: #e5e2e1;
-    --color-tertiary-container: #727171;
-    --color-on-primary-container: #ffdad7;
-    --color-on-secondary-fixed-variant: #464747;
-    --color-primary-fixed-dim: #ffb3ae;
-    --color-secondary-fixed-dim: #c7c6c6;
-    --color-surface-variant: #353534;
+  ::-webkit-scrollbar-track {
+    background: transparent;
   }
-
-  .crimson {
-    --color-on-background: #ffe5e5;
-    --color-background: #0f0000;
-    --color-surface-container: #1b0000;
-    --color-surface-container-high: #2d0000;
-    --color-surface-container-highest: #420000;
-    --color-primary: #ff3333;
-    --color-primary-container: #4c0000;
-    --color-on-primary-container: #ff9999;
-    --color-secondary: #ff8080;
-    --color-error: #ff1a1a;
-    --color-outline-variant: #660000;
+  ::-webkit-scrollbar-thumb {
+    background: rgba(78, 222, 163, 0.2);
+    border-radius: 999px;
   }
-
-  .abyssal {
-    --color-on-background: #e0f2fe;
-    --color-background: #000913;
-    --color-surface-container: #001224;
-    --color-surface-container-high: #001f3f;
-    --color-surface-container-highest: #002d5c;
-    --color-primary: #38bdf8;
-    --color-primary-container: #0c4a6e;
-    --color-on-primary-container: #bae6fd;
-    --color-secondary: #7dd3fc;
-    --color-error: #ef4444;
-    --color-outline-variant: #003a7a;
-  }
-
-  .cyberpunk {
-    --color-on-background: #fdf5ff;
-    --color-background: #080014;
-    --color-surface-container: #12002b;
-    --color-surface-container-high: #1e0047;
-    --color-surface-container-highest: #2b0066;
-    --color-primary: #ec4899;
-    --color-primary-container: #831843;
-    --color-on-primary-container: #fbcfe8;
-    --color-secondary: #eab308;
-    --color-error: #ef4444;
-    --color-outline-variant: #4c1d95;
+  ::-webkit-scrollbar-thumb:hover {
+    background: rgba(78, 222, 163, 0.4);
   }
 }
 
 @layer utilities {
-  .kinetic-gradient {
-    background: linear-gradient(135deg, #ffb3ae 0%, #d13639 100%);
-  }
-  .blood-shadow {
-    box-shadow: 0 0 40px rgba(209, 54, 57, 0.08);
-  }
+  /* Glass panel — the core card style */
   .glass-panel {
+    background-color: rgba(34, 42, 61, 0.4);
     backdrop-filter: blur(20px);
-    background-color: rgba(19, 19, 19, 0.8);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
   }
 
+  /* Aurora glow effect behind hero cards */
+  .aurora-glow {
+    position: relative;
+  }
+  .aurora-glow::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(16, 185, 129, 0.1) 0%, transparent 50%);
+    z-index: -1;
+    pointer-events: none;
+  }
+
+  /* Circular chart helper classes */
+  .circular-chart {
+    display: block;
+    margin: 0 auto;
+    max-width: 80%;
+    max-height: 250px;
+  }
+  .circle-bg {
+    fill: none;
+    stroke: rgba(255,255,255,0.05);
+    stroke-width: 3.8;
+  }
+  .circle {
+    fill: none;
+    stroke-width: 2.8;
+    stroke-linecap: round;
+  }
+  .circle-gradient {
+    stroke: url(#gradient);
+  }
+
+  /* Animations */
   @keyframes aurora-1 {
     0%, 100% { transform: translateY(0) scale(1); }
     50% { transform: translateY(10%) scale(1.1); }
@@ -180,12 +88,12 @@
     0%, 100% { transform: translateY(0) scale(1); }
     50% { transform: translateY(-10%) scale(1.1); }
   }
-  @keyframes spin-slow {
-    100% { transform: rotate(360deg); }
+  @keyframes shimmer {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
   }
 
   .animate-aurora-1 { animation: aurora-1 15s ease infinite alternate; }
   .animate-aurora-2 { animation: aurora-2 20s ease infinite alternate; }
   .animate-aurora-3 { animation: aurora-3 18s ease infinite alternate; }
-  .animate-spin-slow { animation: spin-slow linear infinite; }
 }

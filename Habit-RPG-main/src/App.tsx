@@ -5,6 +5,8 @@ import { Boss } from './pages/Boss';
 import { Login } from './pages/Login';
 import { Stats } from './pages/Stats';
 import { Settings } from './pages/Settings';
+import { SideNavBar } from './components/layout/SideNavBar';
+import { TopNavBar } from './components/layout/TopNavBar';
 import { JuiceOverlay } from './components/JuiceOverlay';
 import { useAuthStore } from './store/useAuthStore';
 import { useUserStore } from './store/useUserStore';
@@ -29,21 +31,21 @@ class ErrorBoundary extends Component<{ children: ReactNode }, { hasError: boole
   render() {
     if (this.state.hasError) {
       return (
-        <div className="flex h-screen w-full items-center justify-center p-6 bg-surface-container-lowest text-center">
-          <div className="max-w-md p-8 rounded-xl bg-surface-container-highest border border-error-container">
-            <span className="material-symbols-outlined text-error text-6xl mb-4">warning</span>
-            <h1 className="text-2xl font-bold text-error mb-2 tracking-tight">System Failure</h1>
-            <p className="text-on-surface-variant font-body mb-6 text-sm">
+        <div className="flex h-screen w-full items-center justify-center p-6 bg-background text-center">
+          <div className="max-w-md p-8 rounded-xl glass-panel">
+            <span className="material-symbols-outlined text-red-400 text-6xl mb-4">warning</span>
+            <h1 className="text-2xl font-bold text-red-400 mb-2 tracking-tight font-headline-lg">System Failure</h1>
+            <p className="text-on-surface-variant font-body-md mb-6 text-sm">
               The application encountered an unexpected error. Please restart your session.
             </p>
-            <div className="text-xs bg-surface-container text-on-surface p-4 rounded text-left overflow-auto max-h-32 mb-6">
+            <div className="text-xs bg-surface-container text-on-surface p-4 rounded text-left overflow-auto max-h-32 mb-6 border border-white/10">
               {this.state.error?.message}
             </div>
             <button 
               onClick={() => window.location.reload()}
-              className="px-6 py-2 bg-error-container text-on-error hover:bg-error transition-colors rounded font-bold font-label tracking-widest uppercase text-sm"
+              className="px-6 py-2 bg-primary-container text-white hover:bg-emerald-600 transition-colors rounded-full font-bold font-label-md tracking-widest uppercase text-sm"
             >
-              Reboot Matrix
+              Restart
             </button>
           </div>
         </div>
@@ -60,6 +62,20 @@ const AuthGuard = ({ children }: { children: ReactNode }) => {
   return <>{children}</>;
 };
 
+// Authenticated Layout with SideNav + TopNav
+const AppLayout = ({ children }: { children: ReactNode }) => {
+  return (
+    <div className="flex h-screen w-full bg-background overflow-hidden">
+      <SideNavBar />
+      <div className="flex-1 flex flex-col min-h-screen overflow-x-hidden overflow-y-auto">
+        <TopNavBar />
+        <JuiceOverlay />
+        {children}
+      </div>
+    </div>
+  );
+};
+
 // Main App Component
 function App() {
   const initAuthListener = useAuthStore(state => state.initAuthListener);
@@ -73,15 +89,10 @@ function App() {
     initAuthListener();
   }, [initAuthListener]);
 
+  // Keep dark mode always on for NutriIntel
   useEffect(() => {
-    const html = document.documentElement;
-    html.classList.remove('dark', 'light', 'crimson', 'abyssal', 'cyberpunk');
-    if (user?.theme) {
-      html.classList.add(user.theme);
-    } else {
-      html.classList.add('dark');
-    }
-  }, [user?.theme]);
+    document.documentElement.classList.add('dark');
+  }, []);
 
   useEffect(() => {
     if (fbUser) {
@@ -100,22 +111,21 @@ function App() {
 
   return (
     <ErrorBoundary>
-      <div className="max-w-md mx-auto w-full min-h-[100dvh] relative bg-background shadow-2xl sm:border-x sm:border-neutral-900 overflow-x-hidden flex flex-col">
-        <Router>
-          <JuiceOverlay />
-          <Routes>
-            <Route path="/login" element={!fbUser ? <Login /> : <Navigate to="/dashboard" replace />} />
-            
-            <Route path="/" element={<AuthGuard><Dashboard /></AuthGuard>} />
-            <Route path="/dashboard" element={<AuthGuard><Dashboard /></AuthGuard>} />
-            <Route path="/boss" element={<AuthGuard><Boss /></AuthGuard>} />
-            <Route path="/stats" element={<AuthGuard><Stats /></AuthGuard>} />
-            <Route path="/settings" element={<AuthGuard><Settings /></AuthGuard>} />
-            
-            <Route path="*" element={<Navigate to="/dashboard" replace />} />
-          </Routes>
-        </Router>
-      </div>
+      <Router>
+        <Routes>
+          <Route path="/login" element={!fbUser ? <Login /> : <Navigate to="/dashboard" replace />} />
+          
+          <Route path="/" element={<AuthGuard><AppLayout><Dashboard /></AppLayout></AuthGuard>} />
+          <Route path="/dashboard" element={<AuthGuard><AppLayout><Dashboard /></AppLayout></AuthGuard>} />
+          <Route path="/food-log" element={<AuthGuard><AppLayout><Dashboard /></AppLayout></AuthGuard>} />
+          <Route path="/patterns" element={<AuthGuard><AppLayout><Stats /></AppLayout></AuthGuard>} />
+          <Route path="/boss" element={<AuthGuard><AppLayout><Boss /></AppLayout></AuthGuard>} />
+          <Route path="/stats" element={<AuthGuard><AppLayout><Stats /></AppLayout></AuthGuard>} />
+          <Route path="/settings" element={<AuthGuard><AppLayout><Settings /></AppLayout></AuthGuard>} />
+          
+          <Route path="*" element={<Navigate to="/dashboard" replace />} />
+        </Routes>
+      </Router>
     </ErrorBoundary>
   );
 }
