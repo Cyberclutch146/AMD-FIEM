@@ -82,7 +82,7 @@ function App() {
   const fbUser = useAuthStore(state => state.fbUser);
   const initialized = useAuthStore(state => state.initialized);
   const initUserListener = useUserStore(state => state.initUserListener);
-  const user = useUserStore(state => state.user);
+
   const initDataSync = useHabitStore(state => state.initDataSync);
 
   useEffect(() => {

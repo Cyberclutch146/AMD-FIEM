@@ -1,9 +1,9 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useUserStore } from '../../store/useUserStore';
+
 
 export const TopNavBar: React.FC = () => {
-  const user = useUserStore(state => state.user);
+
   const navigate = useNavigate();
 
   return (
